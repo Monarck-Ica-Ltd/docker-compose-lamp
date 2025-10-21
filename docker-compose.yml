@@ -3,11 +3,7 @@ version: "3.8"
 services:
   webserver:
     image: php:8.2-apache
-    container_name: "lamp-webserver"
     restart: always
-    ports:
-      - "80:80"
-      - "443:443"
     volumes:
       - ./www:/var/www/html:rw
       - ./logs/apache2:/var/log/apache2
@@ -24,12 +20,14 @@ services:
       a2enmod rewrite &&
       apache2-foreground
       "
+    labels:
+      - "coolify.managed=true"
+      - "coolify.http.enabled=true"
+      - "coolify.http.port=80"
 
   database:
     image: mysql:8.0
-    container_name: "lamp-database"
     restart: always
-    # No external port - only internal access
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./logs/mysql:/var/log/mysql
@@ -41,10 +39,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:latest
-    container_name: "lamp-phpmyadmin"
     restart: always
-    ports:
-      - "8080:80"
     environment:
       PMA_HOST: database
       PMA_PORT: 3306
@@ -54,10 +49,11 @@ services:
       MEMORY_LIMIT: 512M
     depends_on:
       - database
+    labels:
+      - "coolify.managed=true"
+      - "coolify.http.enabled=true"
+      - "coolify.http.port=80"
 
   redis:
     image: redis:latest
-    container_name: "lamp-redis"
     restart: always
-    ports:
-      - "6379:6379"
