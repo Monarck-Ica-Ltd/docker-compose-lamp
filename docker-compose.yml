@@ -29,8 +29,7 @@ services:
     image: mysql:8.0
     container_name: "lamp-database"
     restart: always
-    ports:
-      - "3306:3306"
+    # No external port - only internal access
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./logs/mysql:/var/log/mysql
